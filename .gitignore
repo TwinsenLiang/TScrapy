@@ -41,8 +41,13 @@ env/
 scraped_content/
 output/
 downloads/
+test_output/
+test_adobe_output/
+test_*.py
 *.html
-*.txt
+# 只忽略输出目录的 txt 文件，不忽略 requirements.txt
+output/*.txt
+scraped_content/*.txt
 
 # 不忽略示例输出（如果需要）
 !example_output/

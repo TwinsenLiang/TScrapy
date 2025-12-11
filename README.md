@@ -1,18 +1,20 @@
-# TScrapy - 通用网站爬虫脚手架
+# TScrapy - 通用网站爬虫脚手架 (Selenium 版)
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-一个简单、灵活的通用网站爬虫工具，基于 requests + BeautifulSoup4 构建。适合快速爬取静态网页内容。
+一个强大、灵活的通用网站爬虫工具，基于 Selenium + BeautifulSoup4 构建。**支持爬取 JavaScript 渲染的动态页面**。
 
 ## ✨ 特性
 
 - 🚀 **简单易用** - 命令行一键启动，无需编写代码
+- ⚡ **JavaScript 支持** - 使用 Selenium 可爬取动态渲染的页面（React、Vue、Angular 等）
 - 🎯 **灵活配置** - 支持自定义爬取深度、输出目录、延迟时间等
 - 🔒 **安全可控** - 内置请求延迟、失败重试、域名限制等机制
 - 📦 **多格式输出** - 自动保存 HTML、纯文本、JSON 元数据
 - 🎨 **友好提示** - 实时显示爬取进度和统计信息
 - 🛡️ **错误处理** - 完善的异常处理和错误日志
+- 🎭 **可视调试** - 支持无头模式和可视模式，方便调试
 
 ## 📋 系统要求
 
@@ -41,6 +43,8 @@ venv\Scripts\activate     # Windows
 
 ```bash
 pip install -r requirements.txt
+
+# webdriver-manager 会自动下载并管理 ChromeDriver，无需手动安装
 ```
 
 ## 🚀 快速开始
@@ -52,10 +56,26 @@ pip install -r requirements.txt
 python scraper.py https://example.com
 ```
 
+### 深度说明
+
+**重要**: 深度从 1 开始计数：
+- `depth 1`: 起始页面本身
+- `depth 2`: 起始页面上的所有链接
+- `depth 3`: 第二层页面上的所有链接
+- 以此类推...
+
+```bash
+# 只爬取起始页面本身，不爬取任何链接
+python scraper.py https://example.com -d 1
+
+# 爬取起始页面 + 起始页面的所有链接（两层）
+python scraper.py https://example.com -d 2
+```
+
 ### 常用参数
 
 ```bash
-# 指定爬取深度
+# 指定爬取深度（爬取首页及其链接）
 python scraper.py https://example.com -d 2
 
 # 自定义输出目录
@@ -69,6 +89,12 @@ python scraper.py https://example.com --allow-external
 
 # 排除特定文件类型
 python scraper.py https://example.com --exclude .pdf .zip /login /admin
+
+# 使用可视模式运行（方便调试）
+python scraper.py https://example.com --no-headless
+
+# 自定义超时时间
+python scraper.py https://example.com --page-load-timeout 60
 ```
 
 ## 📖 详细说明
@@ -83,6 +109,9 @@ python scraper.py https://example.com --exclude .pdf .zip /login /admin
 | `--delay` | - | float float | 2.0 4.0 | 请求延迟范围（秒） |
 | `--allow-external` | - | flag | False | 允许爬取外部链接 |
 | `--exclude` | - | list | `.pdf .zip ...` | 排除的 URL 模式 |
+| `--no-headless` | - | flag | False | 使用可视模式运行浏览器 |
+| `--page-load-timeout` | - | int | 30 | 页面加载超时时间（秒） |
+| `--implicit-wait` | - | int | 10 | 隐式等待时间（秒） |
 
 ### 输出格式
 
@@ -94,25 +123,35 @@ python scraper.py https://example.com --exclude .pdf .zip /login /admin
 
 ### 使用示例
 
-#### 示例 1: 爬取博客文章
+#### 示例 1: 只爬取单个页面
 
 ```bash
+# 只爬取首页本身，不跟随任何链接
+python scraper.py https://blog.example.com -d 1 -o ./single_page
+```
+
+#### 示例 2: 爬取博客首页及所有文章列表
+
+```bash
+# 爬取首页和首页上的所有文章链接（两层）
 python scraper.py https://blog.example.com -d 2 -o ./blog_backup
 ```
 
-#### 示例 2: 爬取文档网站
+#### 示例 3: 深度爬取文档网站
 
 ```bash
-python scraper.py https://docs.example.com -d 5 --delay 1 2
+# 爬取文档首页 + 一级目录 + 二级目录（三层）
+python scraper.py https://docs.example.com -d 3 --delay 1 2
 ```
 
-#### 示例 3: 爬取并包含外部链接
+#### 示例 4: 爬取并包含外部链接
 
 ```bash
-python scraper.py https://example.com --allow-external -d 1
+# 只爬取首页及其直接链接，包括外部链接
+python scraper.py https://example.com --allow-external -d 2
 ```
 
-#### 示例 4: 排除登录和管理页面
+#### 示例 5: 排除登录和管理页面
 
 ```bash
 python scraper.py https://example.com --exclude /login /admin /api .pdf
@@ -190,28 +229,30 @@ python scraper.py <url> --delay 5 10
 ### 问题 3: 无内容爬取
 
 **可能原因**:
-- 网站使用 JavaScript 动态加载内容（本工具不支持）
+- 网站使用 JavaScript 动态加载内容，尝试增加 `--implicit-wait` 等待时间
 - 域名限制过滤了所有链接
 
-**解决方案**: 使用 `--allow-external` 参数或考虑使用 Selenium 等工具
+**解决方案**:
+- 使用 `--allow-external` 参数允许爬取外部链接
+- 增加 `--implicit-wait 20` 等待时间
+- 使用 `--no-headless` 可视模式查看页面加载情况
 
 ## 📊 性能说明
 
 ### 速度基准
 
-- 单线程同步爬取
-- 平均速度: 0.2-0.5 页/秒（取决于延迟设置）
+- 使用 Selenium WebDriver 同步爬取
+- 平均速度: 0.2-0.4 页/秒（取决于延迟设置和页面复杂度）
 - 适合爬取规模: 10-1000 个页面
+- 支持 JavaScript 渲染的动态页面
+- webdriver-manager 自动管理浏览器驱动
 
 ### 性能优化建议
 
 - 减少延迟时间（需注意被封风险）
 - 降低爬取深度
 - 使用更快的网络连接
-
-## 🗺️ 后续规划
-
-查看 [ROADMAP.md](ROADMAP.md) 了解未来的功能规划和优化方向。
+- 调整超时时间参数
 
 ## 📝 许可证
 

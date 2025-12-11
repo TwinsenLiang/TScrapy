@@ -1,0 +1,5 @@
+# TScrapy 依赖包 (Selenium 版)
+selenium==4.27.1
+webdriver-manager==4.0.2
+beautifulsoup4==4.12.2
+lxml==6.0.2
