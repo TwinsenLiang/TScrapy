@@ -316,24 +316,20 @@ class WebScraper:
 def main():
     """命令行入口"""
     parser = argparse.ArgumentParser(
-        description='TScrapy - 通用网站爬虫工具 (Selenium 版)',
+        description='TScrapy - 通用网站爬虫 (支持 JavaScript 渲染)',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-示例:
-  # 爬取网站，深度为 2 层
-  python scraper.py https://example.com -d 2
+快速示例:
+  python scraper.py https://example.com -d 1          # 只爬首页
+  python scraper.py https://example.com -d 2          # 爬首页+链接（常用）
+  python scraper.py https://example.com -d 2 -o ./out # 指定输出目录
 
-  # 指定输出目录
-  python scraper.py https://example.com -o ./output
+深度说明:
+  -d 1: 只爬起始页面
+  -d 2: 起始页面 + 页面上的所有链接
+  -d 3: 前两层 + 第二层页面的所有链接
 
-  # 允许跨域爬取
-  python scraper.py https://example.com --allow-external
-
-  # 使用可视模式（调试用）
-  python scraper.py https://example.com --no-headless
-
-  # 自定义延迟和排除模式
-  python scraper.py https://example.com --delay 1 3 --exclude .pdf .zip /login
+更多选项请查看 README.md 或 USAGE.md
         """
     )
 

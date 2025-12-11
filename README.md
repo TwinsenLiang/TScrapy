@@ -5,6 +5,36 @@
 
 一个强大、灵活的通用网站爬虫工具，基于 Selenium + BeautifulSoup4 构建。**支持爬取 JavaScript 渲染的动态页面**。
 
+---
+
+## ⚡ 快速开始（给 AI 的极简指南）
+
+```bash
+# 1. 安装依赖（首次使用）
+pip install -r requirements.txt
+
+# 2. 基础用法 - 只爬一个页面
+python scraper.py <URL> -d 1
+
+# 3. 爬取页面及其所有链接（推荐）
+python scraper.py <URL> -d 2
+
+# 4. 深度爬取（3层）
+python scraper.py <URL> -d 3
+```
+
+**核心参数**：
+- `-d 1`: 只爬首页
+- `-d 2`: 爬首页 + 首页的链接（常用）
+- `-d 3`: 爬首页 + 第一层链接 + 第二层链接
+- `-o 目录`: 指定输出目录（可选）
+
+**输出**：每个页面生成 `.html`、`.txt`、`.json` 三个文件
+
+> 💡 **给 AI 用户**：如果你是 AI，直接看 [USAGE.md](USAGE.md) 获取最简单的使用说明
+
+---
+
 ## ✨ 特性
 
 - 🚀 **简单易用** - 命令行一键启动，无需编写代码
