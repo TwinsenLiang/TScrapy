@@ -1,0 +1,92 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 爬取输出
+scraped_content/
+output/
+downloads/
+*.html
+*.txt
+
+# 不忽略示例输出（如果需要）
+!example_output/
+
+# 日志文件
+*.log
+logs/
+
+# 数据库
+*.db
+*.sqlite
+*.sqlite3
+
+# 配置文件（如果包含敏感信息）
+config.local.yaml
+config.local.json
+.env
+.env.local
+
+# 临时文件
+tmp/
+temp/
+*.tmp
+
+# 测试覆盖率
+.coverage
+htmlcov/
+.pytest_cache/
+
+# 备份文件
+*.bak
+*.backup
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
